@@ -13,11 +13,11 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 def interpolate_y_data(y_data):
-    sequence_length = 50
+    offset = 25
     interpolated_result = []
     for index in range(len(y_data)):
-        interpolated_result.append(
-            sum(y_data[index:index + sequence_length]) / len(y_data[index:index + sequence_length]))
+        init_index = (index - offset) if (index - offset) > 0 else 0
+        interpolated_result.append(sum(y_data[init_index:index + offset]) / len(y_data[init_index:index + offset]))
 
     return np.array(interpolated_result)
 
