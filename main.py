@@ -9,7 +9,7 @@ from keras.layers import Dense
 from keras.layers import LSTM
 from keras.models import Sequential
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
 
 
 def interpolate_y_data(y_data):
@@ -66,6 +66,13 @@ class Normalizer:
         standard_scaler = StandardScaler()
         standard_scaler.fit(self.dataframe)
         scaled_data_frame = standard_scaler.transform(self.dataframe)
+
+        return pd.DataFrame(scaled_data_frame, columns=self.dataframe.columns, index=list(self.dataframe.index.values))
+
+    def robust_scaling(self):
+        robust_scaler = RobustScaler()
+        robust_scaler.fit(self.dataframe)
+        scaled_data_frame = robust_scaler.transform(self.dataframe)
 
         return pd.DataFrame(scaled_data_frame, columns=self.dataframe.columns, index=list(self.dataframe.index.values))
 
