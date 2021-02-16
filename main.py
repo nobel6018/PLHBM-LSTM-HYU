@@ -113,7 +113,7 @@ if __name__ == '__main__':
     model = Sequential()
     model.add(LSTM(16,
                    input_shape=(X_train.shape[1], X_train.shape[2]),
-                   activation='relu',
+                   activation='tanh',
                    return_sequences=False)
               )
     model.add(Dense(1))
