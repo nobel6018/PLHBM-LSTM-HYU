@@ -6,7 +6,7 @@ class RockGrader:
     def __init__(self):
         df = pd.read_csv('./data/rock_grade_label.csv', usecols=['position', 'grade'])
         self.positions = df['position'].tolist()
-        self.grades = df['grade'].tolist(    )
+        self.grades = df['grade'].tolist()
 
     def grade(self, position: float):
         for i, value in enumerate(self.positions):

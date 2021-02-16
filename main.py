@@ -89,11 +89,11 @@ def make_dataset(data, label, window_size=20):
 
 if __name__ == '__main__':
     # Read data
-    df = pd.read_csv('./data/0506-0_v2.csv', usecols=[' CH 5 ', ' CH 6 ', ' CH 9 ', ' CH 10 '])
+    df = pd.read_csv('./data/youngdeok_data.csv', usecols=['rotation', 'feed', 'velocity', 'grade'])
     df.columns = ['rotation', 'feed', 'velocity', 'label']
     X = df.loc[:, 'rotation':'velocity']
     y = df.loc[:, ['label']]
-    y = pd.DataFrame(interpolate_y_data(y.values), y.index, y.columns)
+    # y = pd.DataFrame(interpolate_y_data(y.values), y.index, y.columns)
 
     # Plot data
     plot_correlation(X, y)
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, shuffle=False)
 
     X_train, y_train = make_dataset(X_train, y_train, 20)
-    X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=20)
+    X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=20, shuffle=False)
 
     X_test, y_test = make_dataset(X_test, y_test, 20)
 
