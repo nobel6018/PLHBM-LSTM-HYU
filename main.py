@@ -4,22 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from keras import initializers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.models import Sequential
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
-
-
-def interpolate_y_data(y_data):
-    offset = 25
-    interpolated_result = []
-    for index in range(len(y_data)):
-        init_index = (index - offset) if (index - offset) > 0 else 0
-        interpolated_result.append(sum(y_data[init_index:index + offset]) / len(y_data[init_index:index + offset]))
-
-    return np.array(interpolated_result)
 
 
 def plot_correlation(Xs, y):
@@ -93,7 +84,6 @@ if __name__ == '__main__':
     df.columns = ['rotation', 'feed', 'velocity', 'label']
     X = df.loc[:, 'rotation':'velocity']
     y = df.loc[:, ['label']]
-    # y = pd.DataFrame(interpolate_y_data(y.values), y.index, y.columns)
 
     # Plot data
     plot_correlation(X, y)
@@ -113,13 +103,15 @@ if __name__ == '__main__':
     model = Sequential()
     model.add(LSTM(16,
                    input_shape=(X_train.shape[1], X_train.shape[2]),
-                   activation='tanh',
+                   kernel_initializer=initializers.GlorotNormal(seed=12),
+                   bias_initializer='zeros',
                    return_sequences=False)
               )
-    model.add(Dense(1))
+    model.add(Dense(1, kernel_initializer=initializers.GlorotNormal(seed=12),
+                    bias_initializer='zeros'))
 
     # Learning
-    model.compile(loss='mean_squared_error', optimizer='adam')
+    model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
     early_stop = EarlyStopping(monitor='val_loss', patience=5)
     filename = os.path.join('./model', 'tmp_checkpoint.h5')
     checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
